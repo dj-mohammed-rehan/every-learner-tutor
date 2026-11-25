@@ -1,0 +1,23 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>A tutor for every learner</title>
+<link rel="stylesheet" href="style.css"></head>
+<body>
+<header><h1>A tutor for every learner</h1>
+<button id="prog-btn" class="hbtn">📊</button><select id="lang" aria-label="Language">
+<option value="en">English</option><option value="hi">हिन्दी</option><option value="kn">ಕನ್ನಡ</option><option value="ta">தமிழ்</option><option value="te">తెలుగు</option></select></header>
+<main>
+<section id="s-start"><h2>What do you want to learn?</h2>
+<p class="muted">Type any topic. For example: fractions, photosynthesis, Python loops, the French Revolution.</p>
+<input id="topic" maxlength="200" placeholder="Topic" autocomplete="off">
+<button id="go">Start</button></section>
+<section id="s-diag" hidden><h2>Quick check</h2><p class="muted">A few questions so I know where you are. Guessing is fine.</p>
+<form id="diag-form"></form><button id="diag-submit">Done</button></section>
+<section id="s-chat" hidden><div id="level" class="chip"></div><div id="log" aria-live="polite"></div>
+<form id="chat-form"><input id="msg" maxlength="1500" placeholder="Type here" autocomplete="off"><button>Send</button><button type="button" id="mic" title="Speak">🎤</button></form>
+<button id="prove" class="secondary">I think I understand. Test me</button></section>
+<section id="s-proof" hidden><h2>Prove it</h2><form id="proof-form"></form><button id="proof-submit">Check my answers</button><div id="result"></div></section>
+<section id="s-prog" hidden><h2>Your progress</h2><div id="prog"></div><button id="prog-back" class="secondary">Back</button></section>
+<div id="err" role="alert" hidden></div><div id="busy" hidden>Thinking…</div>
+</main><script src="app.js" type="module"></script></body></html>
