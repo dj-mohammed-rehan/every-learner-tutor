@@ -5,6 +5,7 @@ import { fileURLToPath } from "node:url";
 import { chat, parseJson, isMock } from "./llm.js";
 import * as P from "./prompts.js";
 import { annotate } from "./check.js";
+import { savedLesson } from "./fallback.js";
 
 const ROOT = path.join(path.dirname(fileURLToPath(import.meta.url)), "public");
 const TYPES = { ".html": "text/html; charset=utf-8", ".js": "text/javascript", ".css": "text/css", ".json": "application/json", ".svg": "image/svg+xml" };
@@ -44,8 +45,15 @@ export const routes = {
     const topic = clean(b.topic, MAX.topic);
     const history = arr(b.history).slice(-12).map(m => ({ role: m.role === "assistant" ? "assistant" : "user", content: clean(m.content, MAX.msg) }));
     if (!history.length) throw bad("message required");
-    const reply = await chat([{ role: "system", content: P.tutorSystem(topic, lang(b.lang), { ...b.profile, reteach: clean(b.reteach, 300) }) }, ...history]);
-    return { reply };
+    try {
+      const reply = await chat([{ role: "system", content: P.tutorSystem(topic, lang(b.lang), { ...b.profile, reteach: clean(b.reteach, 300) }) }, ...history]);
+      return { reply };
+    } catch (e) {
+      // Graceful failure: after retries across models, fall back to a saved lesson if we have one for this topic.
+      const saved = history.length <= 2 ? savedLesson(topic, lang(b.lang)) : null;
+      if (saved) return { reply: saved, fallback: true };
+      throw e;
+    }
   },
   async "/api/proof/questions"(b) {
     const topic = clean(b.topic, MAX.topic);
