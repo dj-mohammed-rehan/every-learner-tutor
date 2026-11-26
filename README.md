@@ -35,6 +35,18 @@ Optional env: `LLM_MODEL` (comma list, default `gemini-flash-lite-latest,gemini-
 - If the AI fails or hits free-tier limits, the app shows a friendly message in the learner's language and keeps the lesson state.
 - No personal data is stored. Nothing is saved on the server.
 
+## Evaluation results
+
+`node eval/run.js` (live Gemini free tier, 26 Nov 2026), one run per language (English, Hindi, Kannada, Tamil, Telugu):
+
+- Diagnose questions returned as valid JSON: 5/5
+- Model grader marks a right text answer correct and a wrong one incorrect: 5/5
+- Replies written in the right script: 5/5
+- Code-checked grader catches a wrong number: 5/5
+- Median latency per call: about 1 to 4 seconds on a good day, longer when the free tier is overloaded. Cost: Rs 0.
+
+This is a small smoke-level test set, not a full benchmark. Language quality still needs a native speaker's review.
+
 ## Libraries, APIs and models used
 
 - Node.js built-ins only (http, fs, test runner). No npm packages.
