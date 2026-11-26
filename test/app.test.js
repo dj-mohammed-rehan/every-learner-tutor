@@ -49,6 +49,11 @@ test("unknown language falls back, path traversal blocked", async () => {
   assert.equal((await post("/api/diagnose/questions", { topic: "x", lang: "zz" })).status, 200);
   assert.notEqual((await fetch(base + "/..%2f..%2fetc/passwd")).status, 200);
 });
+test("saved lesson fallback", async () => {
+  const { savedLesson } = await import("../fallback.js");
+  assert.match(savedLesson("Fractions", "hi"), /भिन्न/);
+  assert.equal(savedLesson("quantum physics", "en"), null);
+});
 test("static page served", async () => {
   const r = await fetch(base + "/"); assert.equal(r.status, 200); assert.match(await r.text(), /tutor for every learner/);
 });
