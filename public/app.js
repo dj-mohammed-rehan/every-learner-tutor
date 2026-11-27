@@ -29,13 +29,13 @@ function renderQuestions(form, qs) {
   form.innerHTML = "";
   qs.forEach(q => {
     const d = document.createElement("div"); d.className = "q";
-    const l = document.createElement("label"); l.textContent = `${q.id}. ${q.question}`; l.htmlFor = `q${q.id}`;
-    const i = document.createElement("input"); i.id = `q${q.id}`; i.placeholder = t("yours");
+    const l = document.createElement("label"); l.textContent = `${q.id}. ${q.question}`; l.htmlFor = `${form.id}-q${q.id}`;
+    const i = document.createElement("input"); i.id = `${form.id}-q${q.id}`; i.placeholder = t("yours");
     if (q.answer_type === "number") i.inputMode = "decimal";
     d.append(l, i); form.append(d);
   });
 }
-const collect = (qs) => Object.fromEntries(qs.map(q => [q.id, $(`q${q.id}`).value]));
+const collect = (qs, formId) => Object.fromEntries(qs.map(q => [q.id, $(`${formId}-q${q.id}`).value]));
 function addBubble(role, text) {
   const d = document.createElement("div"); d.className = `bubble ${role === "user" ? "me" : "bot"}`; d.textContent = text;
   $("log").append(d); d.scrollIntoView({ block: "end" });
@@ -55,7 +55,7 @@ $("go").onclick = async () => {
   S.questions = r.questions; renderQuestions($("diag-form"), S.questions); show("s-diag");
 };
 $("diag-submit").onclick = async () => {
-  const r = await api("/api/diagnose/evaluate", { questions: S.questions, answers: collect(S.questions) }); if (!r) return;
+  const r = await api("/api/diagnose/evaluate", { questions: S.questions, answers: collect(S.questions, "diag-form") }); if (!r) return;
   S.profile = r; $("level").textContent = r.level; show("s-chat");
   S.history = [{ role: "user", content: `Please start teaching me. ${r.summary || ""}` }];
   const t1 = await api("/api/tutor", { history: S.history, profile: S.profile }); if (!t1) return;
@@ -73,7 +73,7 @@ $("prove").onclick = async () => {
   S.questions = r.questions; renderQuestions($("proof-form"), S.questions); $("result").innerHTML = ""; show("s-proof");
 };
 $("proof-submit").onclick = async () => {
-  const r = await api("/api/proof/grade", { questions: S.questions, answers: collect(S.questions) }); if (!r) return;
+  const r = await api("/api/proof/grade", { questions: S.questions, answers: collect(S.questions, "proof-form") }); if (!r) return;
   const box = $("result"); box.innerHTML = "";
   const h = document.createElement("h3"); h.textContent = `${r.score} / ${r.total}`; box.append(h);
   r.results.forEach(x => { const p = document.createElement("p"); p.className = x.correct ? "ok" : "no"; p.textContent = `${x.id}. ${x.correct ? "✓" : "✗"} ${x.feedback}`; box.append(p); });
