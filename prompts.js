@@ -21,7 +21,7 @@ Teach one small step at a time at this level. Use a simple everyday example. End
 
 export const proofQuestions = (topic, lang, transcript) => [
   { role: "system", content: `MODE:PROOF_QUESTIONS ${common(lang)}
-Write 3 new questions (not repeated from the lesson) that prove the learner understood what was taught. Make the LAST question ask the learner to explain the idea back in their own words (answer_type text). Use answer_type "number" with "expected" for single-number answers. Return JSON only: {"questions":[{"id":1,"question":"...","answer_type":"text|number","expected":"optional"}]}` },
+Write 3 new questions (not repeated from the lesson) that prove the learner understood what was taught. Make the LAST question ask the learner to explain the idea back in their own words (answer_type text). Use answer_type "number" with "expected" for single-number answers. The "expected" value must be the exact answer to the question as written: work it out step by step and re-check it before you output it. Ask for one thing only, so the answer is a single number. Return JSON only: {"questions":[{"id":1,"question":"...","answer_type":"text|number","expected":"optional"}]}` },
   { role: "user", content: `Topic: ${topic}\nLesson so far:\n${transcript}` },
 ];
 
